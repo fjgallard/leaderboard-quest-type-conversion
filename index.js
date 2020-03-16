@@ -9,18 +9,13 @@ admin.initializeApp({
 // 1. Get PlayerQuest Collection
 let db = admin.firestore();
 let playerQuests = db.collection('playerQuests');
-// 2. Set Types depending on required property
+
+// 2. For every playerquest, remove the required property
 playerQuests.get().then(snapshot => {
   snapshot.forEach(doc => {
-    const required = doc.get('required');
-    const type = doc.get('type');
-    if (type) {
-      return;
-    }
-    else {
-      doc.ref.update({
-        type: required ? 'Required' : 'Additional'
-      })
-    }
-  })
+
+    doc.ref.update({
+      required: admin.firestore.FieldValue.delete()
+    });
+  });
 });
